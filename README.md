@@ -1,91 +1,61 @@
-# rpcX Hello World Program
+rpcx-hello-world
 
-A simple guide to getting started with rpcX from Ellipsis Labs.
+A simple “Hello World” example using the rpcx framework for high-performance RPC in Go. This project demonstrates:
+	•	Basic RPC communication (server & client).
+	•	Authentication using request metadata (token-based).
+	•	Middleware for logging requests and responses.
+	•	Bidirectional streaming RPC for continuous message exchange.
 
-See the [Atlas documentation](https://docs.atlas.xyz/rpc/rpcx/tutorial/custom) for a step-by-step guide to using this repo.
+🚀 Features
 
-## Setup
+✔ Lightweight and fast RPC communication.
+✔ Secure authentication using metadata tokens.
+✔ Logging middleware for monitoring requests.
+✔ Support for bidirectional streaming.
 
-You will need to install the latest version of the `atlas-rpcx` CLI from the [Atlas release repo](https://github.com/Ellipsis-Labs/atlas-release/releases). Currently only Linux and MacOS are supported.
 
-Setup Rust to properly develop rpcX packages:
+🛠 Installation
 
-```shell
-cargo install cargo-component
-rustup target add wasm32-wasip1
-```
+Ensure you have Go installed (version 1.18+ recommended).
 
-Ensure you have at least `rustc` version `1.81.0` installed.
+	1.	Clone the repository:
+ git clone https://github.com/Boomchainlab/rpcx-hello-world.git
+cd rpcx-hello-world
 
-### Program
+2.	Install dependencies:
+   go mod tidy
 
-It is recommended that the sample program be built with `solana-cli` version `2.0.24`. To build the program, run:
+   📡 Running the Server & Client
+   1️⃣ Start the Server
+   go run server.go
 
-```shell
-cd program
-cargo build-sbf
-```
+  2️⃣ Run the Client
+  go run client.go
 
-This should create a `target/deploy` directory containing the compiled program binary.
+  📜 Code Explanation
+  Server (server.go)
+	•	Defines an HelloService struct with an RPC method Say.
+	•	Uses metadata authentication to verify client requests.
+	•	Implements logging middleware for request tracking.
+	•	Starts an rpcx server on tcp://127.0.0.1:8972.
 
-Make sure there's a generated program ID keypair in the `target/deploy` directory.
+Client (client.go)
+	•	Connects to the server using rpcx client.
+	•	Sends an authentication token via metadata.
+	•	Calls the Say method and prints the response.
 
-```shell
-$ echo $(solana-keygen pubkey target/deploy/rpcx_hello_world_program-keypair.json)
-```
+🔌 Example Output
+Response from server: Hello, RPCX!
+Server Logs:
+Incoming request: RPCX
+Response sent: Hello, RPCX!
 
-To deploy the program, ensure you have a funded local Atlas testnet keypair and run:
+📡 Streaming Support (Coming Soon)
 
-```shell
-solana program deploy --use-rpc <PATH_TO_PROGRAM_BINARY> --url <RPC_URL>
-```
+The project will be updated to include bidirectional streaming using rpcx’s Stream functionality.
 
-### Script
+🌟 Contributing
 
-Run the following command to interact with the hello world program:
+Feel free to fork the repository, open an issue, or submit a pull request.
 
-```shell
-$ cargo run -- --program-id <PROGRAM_ID>
-Transaction confirmed: 5Dq9Nc2gHpUTQ6EyP8w7HG53p5E8sG2qSiH1htY7NZvByzYNTPtd4c3bZck4kXteL8CgGwAwKb3JEy69r415r8gK
-```
 
-You may also provide the arguments `--payer <PAYER_KEYPAIR_PATH>` and `--rpc-url <RPC_URL>` to use a non-default payer or RPC URL.
-
-### rpcX Package
-
-Run the following command to build the rpcX package:
-
-```shell
-$ cargo component build --release --manifest-path rpcx-package/Cargo.toml
-```
-
-Expected output:
-
-```
-Creating component rpcx-package/target/wasm32-wasip1/release/rpcx_package.wasm
-```
-
-#### Testing a local rpcX Package
-
-To test a local rpcX package use the `atlas-rpcx` CLI tool's `simulate` command:
-
-```shell
-$ atlas-rpcx simulate --help
-```
-
-#### Package Deployment
-
-To deploy the rpcX package from the root directory:
-
-```shell
-$ atlas-rpcx registry deploy $(target/deploy/rpcx_hello_world_program-keypair.json) rpcx-package/target/wasm32-wasip1/release/rpcx_package.wasm  --url https://testnet.atlas.xyz
-```
-
-#### Interacting with a deployed rpcX Package
-
-To interact with a deployed rpcX package use the `atlas-rpcx` CLI tool's `query` and `pubsub` commands:
-
-```shell
-$ atlas-rpcx query --help
-$ atlas-rpcx pubsub --help
-```
